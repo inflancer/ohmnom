@@ -1,0 +1,31 @@
+services:
+  ohmnom:
+    container_name: ohmnom
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - .:/var/www
+    env_file:
+      - .env
+    networks:
+      - ohmnom_network
+  
+  
+  ohmnom-nginx:
+    image: nginx:alpine
+    container_name: ohmnom-nginx
+    restart: unless-stopped
+    ports:
+      - "8081:80"
+    volumes:
+      - .:/var/www
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - ohmnom
+    networks:
+      - ohmnom_network
+  
+networks:
+  ohmnom_network:
+    external: true

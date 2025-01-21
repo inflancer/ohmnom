@@ -1,0 +1,45 @@
+name: Deploy to Server
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up SSH
+        uses: webfactory/ssh-agent@v0.5.3
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+      - name: SSH into server and pull and deploy latest changes
+        id: ssh_deploy
+        run: |
+          ssh -T -o StrictHostKeyChecking=no ${{ secrets.DROPLET_USER }}@${{ secrets.DROPLET_IP }} << 'EOF'
+            set -e
+            cd /root/ohmnom
+
+            # Pull latest code from the repository
+            echo "Pulling latest changes..."
+            git pull origin main 2>&1 | tee git_pull.log
+            echo "Git pull complete."
+
+            # Build and run containers
+            echo "Building and starting containers..."
+            docker compose up --build -d 2>&1 | tee build_run.log
+            echo "Containers started."
+
+            # Prune unused Docker images
+            echo "Pruning unused Docker images..."
+            docker system prune -f 2>&1 | tee cleanup.log
+            echo "Unused Docker images pruned."
+
+            echo "Deployment Successful"
+          EOF
+        
