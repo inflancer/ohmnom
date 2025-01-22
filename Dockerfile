@@ -22,7 +22,7 @@ RUN apk add --no-cache \
     oniguruma-dev \ 
     && docker-php-ext-configure gd --with-freetype --with-jpeg --with-webp \
     && docker-php-ext-install -j$(nproc) gd \
-    && docker-php-ext-install pdo pdo_mysql pdo_pgsql mbstring zip exif pcntl \
+    && docker-php-ext-install pdo pdo_mysql pdo_pgsql bcmath mbstring zip exif pcntl \
     && rm -rf /var/cache/apk/* /var/lib/apt/lists/*  # Clean up to reduce image size
 
 # Copy Composer from the official Composer image
