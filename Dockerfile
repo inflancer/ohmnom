@@ -21,11 +21,33 @@ RUN apk add --no-cache \
     libpq-dev \
     openssl-dev \
     libsodium-dev \
-    libxml2-dev \
-    && docker-php-ext-configure gd --with-freetype --with-jpeg --with-webp \
+    libxml2-dev
+
+# Configure and install PHP extensions
+RUN docker-php-ext-configure gd \
+    --with-freetype=/usr/include/ \
+    --with-jpeg=/usr/include/ \
+    --with-webp=/usr/include/ \
     && docker-php-ext-install -j$(nproc) gd \
-    && docker-php-ext-install bcmath ctype json openssl pdo pdo_mysql pdo_pgsql tokenizer xml fileinfo sodium mbstring zip exif pcntl \
-    && rm -rf /var/cache/apk/* /var/lib/apt/lists/*
+    && docker-php-ext-install -j$(nproc) \
+    bcmath \
+    ctype \
+    json \
+    openssl \
+    pdo \
+    pdo_mysql \
+    pdo_pgsql \
+    tokenizer \
+    xml \
+    fileinfo \
+    sodium \
+    mbstring \
+    zip \
+    exif \
+    pcntl
+
+# Clean up
+RUN rm -rf /var/cache/apk/* /var/lib/apt/lists/*
 
 # Copy Composer from the official Composer image
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
