@@ -30,10 +30,12 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 # Copy application code into the container
 COPY . /var/www
-COPY --chown=www-data:www-data . /var/www
+# COPY --chown=www-data:www-data . /var/www
 
 # Set the correct permissions for Laravel (optional but recommended)
-RUN chmod -R 775 /var/www/storage /var/www/bootstrap/cache && \
-    chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache
+RUN chmod -R 775 /var/www/storage /var/www/bootstrap && \
+    # chown -R www-data:www-data /var/www/storage /var/www/bootstrap && \
+    chown -R www-data:www-data /var/www
+
 
     
