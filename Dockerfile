@@ -9,20 +9,30 @@ RUN apk add --no-cache \
     build-base \
     libpng-dev \
     libjpeg-turbo-dev \
-    libwebp-dev \ 
+    libwebp-dev \
     freetype-dev \
+    icu-dev \
+    libzip-dev \
+    libpq-dev \
+    oniguruma-dev \
     zip \
-    jpegoptim optipng pngquant gifsicle \
     vim \
     unzip \
     git \
     curl \
-    libzip-dev \
-    libpq-dev \
-    oniguruma-dev \ 
     && docker-php-ext-configure gd --with-freetype --with-jpeg --with-webp \
-    && docker-php-ext-install -j$(nproc) gd \
-    && docker-php-ext-install pdo pdo_mysql pdo_pgsql bcmath mbstring zip exif pcntl \
+    && docker-php-ext-install -j$(nproc) \
+       gd \
+       pdo \
+       pdo_mysql \
+       pdo_pgsql \
+       bcmath \
+       mbstring \
+       zip \
+       exif \
+       pcntl \
+       intl \
+       opcache \
     && rm -rf /var/cache/apk/* /var/lib/apt/lists/*  # Clean up to reduce image size
 
 # Copy Composer from the official Composer image
@@ -33,4 +43,6 @@ COPY . /var/www
 RUN chown -R www-data:www-data /var/www \
     && chmod -R 775 /var/www/storage /var/www/bootstrap/cache
 
-    
+# Expose port and start command
+EXPOSE 9000
+CMD ["php-fpm"]
