@@ -4,7 +4,7 @@ FROM php:8.2-fpm AS base
 # Set working directory
 WORKDIR /var/www
 
-# Install required dependencies
+# Install dependencies
 RUN apt-get update && apt-get install -y \
     build-essential \
     libpng-dev \
@@ -16,26 +16,14 @@ RUN apt-get update && apt-get install -y \
     libpq-dev \
     libssl-dev \
     libsodium-dev \
+    libxml2-dev \
     zip \
     unzip \
     git \
     curl \
     && docker-php-ext-configure gd --with-freetype --with-jpeg --with-webp \
-    && ls /usr/src/php/ext/gd \
-    && docker-php-ext-install -j$(nproc) \
-       gd \
-       bcmath \
-       ctype \
-       json \
-       mbstring \
-       openssl \
-       pdo \
-       pdo_mysql \
-       tokenizer \
-       xml \
-       zip \
-       fileinfo \
-       sodium \
+    && docker-php-ext-install -j$(nproc) gd \
+    && docker-php-ext-install -j$(nproc) bcmath ctype json mbstring openssl pdo pdo_mysql tokenizer xml zip fileinfo sodium \
     && rm -rf /var/lib/apt/lists/*
 
 # Copy Composer from the official Composer image
@@ -48,3 +36,4 @@ RUN chown -R www-data:www-data /var/www \
 
 # Set the default user to www-data for better security
 USER www-data
+
