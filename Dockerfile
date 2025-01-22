@@ -21,6 +21,7 @@ RUN apt-get update && apt-get install -y \
     git \
     curl \
     && docker-php-ext-configure gd --with-freetype --with-jpeg --with-webp \
+    && ls /usr/src/php/ext/gd \
     && docker-php-ext-install -j$(nproc) \
        gd \
        bcmath \
