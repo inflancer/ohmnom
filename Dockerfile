@@ -9,7 +9,7 @@ RUN apk add --no-cache \
     build-base \
     libpng-dev \
     libjpeg-turbo-dev \
-    libwebp-dev \
+    libwebp-dev \ 
     freetype-dev \
     zip \
     jpegoptim optipng pngquant gifsicle \
@@ -19,35 +19,11 @@ RUN apk add --no-cache \
     curl \
     libzip-dev \
     libpq-dev \
-    openssl-dev \
-    libsodium-dev \
-    libxml2-dev
-
-# Configure and install PHP extensions
-RUN docker-php-ext-configure gd \
-    --with-freetype=/usr/include/ \
-    --with-jpeg=/usr/include/ \
-    --with-webp=/usr/include/ \
+    oniguruma-dev \ 
+    && docker-php-ext-configure gd --with-freetype --with-jpeg --with-webp \
     && docker-php-ext-install -j$(nproc) gd \
-    && docker-php-ext-install -j$(nproc) \
-    bcmath \
-    ctype \
-    json \
-    openssl \
-    pdo \
-    pdo_mysql \
-    pdo_pgsql \
-    tokenizer \
-    xml \
-    fileinfo \
-    sodium \
-    mbstring \
-    zip \
-    exif \
-    pcntl
-
-# Clean up
-RUN rm -rf /var/cache/apk/* /var/lib/apt/lists/*
+    && docker-php-ext-install pdo pdo_mysql pdo_pgsql mbstring zip exif pcntl \
+    && rm -rf /var/cache/apk/* /var/lib/apt/lists/*  # Clean up to reduce image size
 
 # Copy Composer from the official Composer image
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
@@ -56,3 +32,5 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 COPY . /var/www
 RUN chown -R www-data:www-data /var/www \
     && chmod -R 775 /var/www/storage /var/www/bootstrap/cache
+
+    
