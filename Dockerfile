@@ -23,6 +23,7 @@ RUN apk add --no-cache \
     && docker-php-ext-configure gd --with-freetype --with-jpeg --with-webp \
     && docker-php-ext-install -j$(nproc) \
        gd \
+       mysqli \
        pdo \
        pdo_mysql \
        pdo_pgsql \
